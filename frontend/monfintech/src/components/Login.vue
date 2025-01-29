@@ -20,6 +20,7 @@
 
 <script>
 import instance from '@/api/axios';
+import { mapActions } from 'vuex';
 
 export default {
     name: 'LoginComponent',
@@ -32,12 +33,15 @@ export default {
         };
     },
     methods: {
+        ...mapActions(["saveTokens"]),
         async loginUser() {
             try {
-                const response = await instance.post("token/", this.form);
+                const response = await instance.post("auth/token/", this.form);
                 const { access, refresh } = response.data;
-                localStorage.setItem("access_token", access);
-                localStorage.setItem("refresh_token", refresh);
+                
+                // save token in vuex store
+                this.saveTokens({ accessToken: access, refreshToken: refresh });
+                
                 alert("Login successful!");
                 this.$router.push({ name: "DashboardPage" });
             } catch (error) {

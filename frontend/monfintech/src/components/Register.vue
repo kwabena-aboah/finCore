@@ -39,7 +39,7 @@ export default {
   methods: {
     async registerUser() {
       try {
-        const response = await instance.post("register/", this.form);
+        const response = await instance.post("auth/register/", this.form);
         alert("Registration successful!");
         console.log(response.data);
       } catch (error) {

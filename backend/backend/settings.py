@@ -50,9 +50,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 'django_celery_beat',
     # 'import_export',
+    'django_filters',
     'rest_framework',
     'rest_framework_simplejwt',
     'authentication',
+    'monfintech',
 ]
 
 MIDDLEWARE = [
@@ -165,8 +167,8 @@ REST_FRAMEWORK = {
      'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    # 'PAGE_SIZE': 10,
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10,
 }
 
 # Django REST SIMPLE_JWT

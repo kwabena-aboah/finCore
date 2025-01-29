@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <router-link to="/" class="navbar-brand">MonFintech</router-link>
+            <router-link to="/dashboard" class="navbar-brand">MonFintech</router-link>
             <button 
                 type="button"
                 class="navbar-toggler"
@@ -20,6 +20,9 @@
                     <li class="nav-item">
                         <router-link to="/profile" class="nav-link">Profile</router-link>
                     </li>
+                    <li class="nav-item">
+                        <router-link to="/transactions" class="nav-link">Transactions</router-link>
+                    </li>
                 </ul>
                 <button class="btn btn-danger" @click="logout">Logout</button>
             </div>
@@ -28,12 +31,15 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
     name: "NavbarComponent",
     methods: {
+        ...mapActions(["logout"]),
         logout() {
-            localStorage.removeItem("access_token");
-            localStorage.removeItem("refresh_token");
+            // this.logout(); // clear tokens from vuex and localStore
+            alert("See you later!")
             this.$router.push({ name: "LoginComponent" });
         }
     }

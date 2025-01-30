@@ -15,11 +15,11 @@
             </button>
 
             <!-- Add Transaction Modal -->
-             <div class="modal fade" id="addTransactionModal" tabindex="-1" aria-labelledby="addTransactionModalLabel" aria-hidden="true">
+             <div class="modal fade" id="addTransactionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addTransactionModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="addTransactionModalLabel">Add Transaction</h5>
+                            <h5 class="modal-title fs-5" id="addTransactionModalLabel">Add Transaction</h5>
                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form @submit.prevent="addTransaction">
@@ -122,7 +122,7 @@
 
 <script>
 import instance from '@/api/axios';
-import { Modal } from "bootstrap";
+// import { Modal } from "bootstrap";
 import Navbar from '@/components/Navbar.vue';
 
 export default {
@@ -182,9 +182,9 @@ export default {
                 });
                 this.transactions.unshift(response.data); // Add new transactions to the  list
                 this.newTransaction = { amount: "", category: "", description: "" };    // Reset form
-                const modal = document.getElementById("addTransactionModal");
-                const bootstrapModal = Modal.getInstance(modal);
-                bootstrapModal.hide(); // Close modal
+                // const modal = document.getElementById("addTransactionModal");
+                // const bootstrapModal = Modal.getInstance(modal);
+                // bootstrapModal.hide(); // Close modal
                 // if (modal) {
                 //     bootstrapModal.hide(); // Close modal
                 // }

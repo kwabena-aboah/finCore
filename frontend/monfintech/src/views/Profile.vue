@@ -1,7 +1,8 @@
 <template>
     <div>
         <Navbar />
-        <div class="container" mt-5>
+        <Sidebar />
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <h2 class="text-center">User Profile</h2>
             <div class="card shadow-sm p-4" v-if="profile">
                 <form @submit.prevent="updateProfile">
@@ -19,18 +20,20 @@
             <div v-else>
                 <p class="text-center">Loading profile...</p>
             </div>
-        </div>
+        </main>
     </div>
 </template>
 
 <script>
 import instance from '@/api/axios';
 import Navbar from '@/components/Navbar.vue';
+import Sidebar from "@/components/Sidebar.vue"
 
 export default {
     name: "ProfilePage",
     components: {
         Navbar,
+        Sidebar,
     },
     data() {
         return {

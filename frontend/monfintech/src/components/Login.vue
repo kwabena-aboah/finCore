@@ -1,21 +1,24 @@
 <template>
-    <div class="container mt-5">
-        <h2>Login</h2>
-        <form @submit.prevent="loginUser" class="form">
-            <div class="mb-3">
+    <main class="form-signin text-center">
+        <form @submit.prevent="loginUser">
+            <img src="@/assets/logo.jpeg" class="mb-4" alt="logo.jpeg" width="280" height="100">
+            <div class="form-floating">
+                <input v-model="form.username" type="text" class="form-control" id="username" placeholder="Username" required />
                 <label for="username" class="form-label">Username</label>
-                <input v-model="form.username" type="text" class="form-control" id="username" required />
             </div>
-            <div class="mb-3">
+            <div class="form-floating">
+                <input v-model="form.password" type="password" class="form-control" id="password" placeholder="Password" required />
                 <label for="password" class="form-label">Password</label>
-                <input v-model="form.password" type="password" class="form-control" id="password" required />
             </div>
-            <button type="submit" class="btn btn-primary">Login</button>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Sign in</button>
+            <hr>
+            <div class="checkbox mb-3">
+                <p class="mt-5 mb-3 text-muted">Don't have an account? Click on the "Register" button below.</p>
+              <router-link to="/register"  class="w-100 btn btn-lg btn-default shadow">Register</router-link>
+            </div>
         </form>
-        <br>
-        <hr>
-        <router-link to="/register">Register</router-link>
-    </div>
+        <p class="mt-5 mb-3 text-muted">&copy; 2025–2026</p>
+    </main>
 </template>
 
 <script>
@@ -52,3 +55,45 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+
+.form-signin .checkbox {
+  font-weight: 400;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+</style>

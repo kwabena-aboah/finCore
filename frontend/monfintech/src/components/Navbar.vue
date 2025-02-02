@@ -1,33 +1,23 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <router-link to="/dashboard" class="navbar-brand">MonFintech</router-link>
-            <button 
-                type="button"
-                class="navbar-toggler"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarNav"
-                aria-controls="navbarNav"
-                aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <router-link to="/dashboard" class="nav-link">Home</router-link>
-                    </li>
-                    <li class="nav-item">
-                        <router-link to="/profile" class="nav-link">Profile</router-link>
-                    </li>
-                    <li class="nav-item">
-                        <router-link to="/transactions" class="nav-link">Transactions</router-link>
-                    </li>
-                </ul>
-                <button class="btn btn-danger" @click="logout">Logout</button>
+    <header class="navbar navbar-light sticky-top bg-light flex-md-nowrap p-0 shadow">
+        <router-link to="/dashboard" class="navbar-brand col-md-3 col-lg-2 me-0 px-3"><span class="h3" style="color: #2f59a1;">Mon</span><span class="h4" style="color: #ffffff;">Fintech</span></router-link>
+        <button 
+            type="button"
+            class="navbar-toggler position-absolute d-md-none collapsed"
+            data-bs-toggle="collapse"
+            data-bs-target="#sidebarMenu"
+            aria-controls="sidebarMenu"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+        <div class="navbar-nav">
+            <div class="navbar-item text-nowrap">
+                <a class="nav-link px-3" @click="logout">Sign Out</a>
             </div>
         </div>
-    </nav>
+    </header>
 </template>
 
 <script>
@@ -46,8 +36,38 @@ export default {
 };
 </script>
 
-<style>
-.navbar {
-    margin-bottom: 20px;
+<style scoped>
+/*
+ * Navbar
+ */
+
+.navbar-brand {
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+  font-size: 1rem;
+  background-color: rgba(0, 0, 0, .25);
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+}
+
+.navbar .navbar-toggler {
+  top: .25rem;
+  right: 1rem;
+}
+
+.navbar .form-control {
+  padding: .75rem 1rem;
+  border-width: 0;
+  border-radius: 0;
+}
+
+.form-control-dark {
+  color: #fff;
+  background-color: rgba(255, 255, 255, .1);
+  border-color: rgba(255, 255, 255, .1);
+}
+
+.form-control-dark:focus {
+  border-color: transparent;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
 }
 </style>

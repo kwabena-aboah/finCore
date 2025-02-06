@@ -1,6 +1,6 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
-from . models import Transaction, Budget
+from . models import Transaction, Budget, Payment
 
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,3 +22,11 @@ class BudgetSerializer(serializers.ModelSerializer):
         if value <= 0:
             raise ValidationError("Amount must be greater than zero.")
         return value
+
+
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment
+        fields = ['id', 'user', 'amount', 'payment_method', 'recipient', 'status', 'transaction_id', 'gateway_response', 'created_at']
+        read_only_fields = ['status', 'transaction_id', 'gateway_response', 'created_at']
+        

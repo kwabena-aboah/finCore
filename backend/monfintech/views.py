@@ -1,3 +1,5 @@
+import uuid
+import requests
 from rest_framework import generics, permissions
 from rest_framework.views import APIView
 from django.db.models import Q
@@ -6,8 +8,8 @@ from rest_framework.permissions import BasePermission, AllowAny, IsAuthenticated
 from rest_framework import status
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import LimitOffsetPagination
-from . models import Transaction, Budget
-from . serializers import TransactionSerializer, BudgetSerializer
+from . models import Transaction, Budget, Payment
+from . serializers import TransactionSerializer, BudgetSerializer, PaymentSerializer
 from django.core.exceptions import ObjectDoesNotExist
 
 class ModelPagination(LimitOffsetPagination):
@@ -78,3 +80,63 @@ class BudgetDetailView(APIView):
 
 		budget.delete()
 		return Response({"message": "Budget deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+class PaymentView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def post(self, request):
+		data = request.data
+		data['user'] = request.user.id
+		data['transaction_id'] = uuid.uuid4().hex[:1] # unique transaction id
+		#Validate the request
+		serializer = PaymentSerializer(data=data)
+		if serializer.is_valid():
+			payment = serializer.save()
+
+			# Process payment based on the method
+			if data['payment_method'] == 'crypto':
+				response = self.process_crypto(payment)
+			elif data['payment_method'] == 'card':
+				response = self.process_mastercard(payment)
+			elif data['payment_method'] == 'mobile_money':
+				response = self.process_mobile_money(payment)
+			else:
+				return Response({"error": "Invalid payment method"}, status=status.HTTP_400_BAD_REQUEST)
+
+			# Update payment status
+			payment.status = 'successful' if response.get('success') else 'failed'
+			payment.gateway_response = response
+			payment.save()
+
+			return Response(PaymentSerializer(payment).data, status=status.HTTP_200_OK)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+	def process_crypto(self, payment):
+		# Add a cryptocurrency API URL here
+		response = requests.post('https://api.crypto.com/payments', json={
+			'amount': float(payment.amount),
+			'recipient_wallet': payment.recipient,
+			'transaction_id': payment.transaction_id,
+		})
+		return response.json()
+
+	def process_mastercard(self, payment):
+		# Add Mastercard API URL here
+		response = requests.post('https://api.mastercard.com/payments', json={
+			'amount': float(payment.amount),
+			'card_number': payment.recipient, # Enter card number here
+			'transaction_id': payment.transaction_id,
+		})
+		return response.json()
+
+	def process_mobile_money(self, payment):
+		# Add MTN, Telecel or AirtelTigo API URLs here
+		response = requests.post('https://api.paystack.co/transfer', json={
+			'amount': float(payment.amount),
+			'recipient': payment.recipient,
+			'reference': payment.transaction_id,
+		}, headers={
+			'Authorization': 'Bearer YOUR_API_KEY',
+			'Content-Type': 'application/json'
+		})
+		return response.json()

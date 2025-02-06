@@ -12,6 +12,8 @@
 <script>
 import Navbar from "@/components/Navbar.vue"
 import Sidebar from "@/components/Sidebar.vue"
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 
 export default {
     components: {
@@ -19,5 +21,10 @@ export default {
         Sidebar,
     },
     name: 'DashboardPage',
+    created() {
+        toast.success("Login successful!", {
+          autoClose: 8000,
+        });
+    },
 }
 </script>

@@ -32,6 +32,12 @@ const routes = [
         component: () => import('../views/Transactions.vue'),
         meta: { requiresAuth: true },
     },
+    {
+        path: '/budgets',
+        name: 'BudgetPage',
+        component: () => import('../views/Budget.vue'),
+        meta: { requiresAuth: true },
+    },
 ];
 
 const router  = createRouter({

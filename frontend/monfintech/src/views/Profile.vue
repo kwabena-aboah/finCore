@@ -28,6 +28,8 @@
 import instance from '@/api/axios';
 import Navbar from '@/components/Navbar.vue';
 import Sidebar from "@/components/Sidebar.vue"
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 
 export default {
     name: "ProfilePage",
@@ -57,22 +59,28 @@ export default {
                 console.error("Error fetching user profile:", error);
             }
         },
-        async updateProfile(url="auth/profile/") {
+        async updateProfile() {
             try {
-                const response = await instance.put(url, this.profile, {
+                const response = await instance.put("auth/profile/", this.profile, {
                     headers: {
                     'Authorization': `Bearer ${this.$store.state.accessToken}`,
+                    'Content-Type': 'application/json',
                 }
                 });
-                this.profile = response.data
                 if (response.status === 200) {
-                    console.log('Profile updated successfully:', response.data);
+                    this.profile = response.data
+                    toast.success("Profile updated successfully");
+                    // alert("Profile updated successfully")
+                    // console.log('Profile updated successfully:', response.data);
                 } else {
-                    console.log("Unexpected response:", response);
+                    toast.warn("Unexpected response");
+                    // alert("Unexpected response")
+                    // console.log("Unexpected response:", response);
                 }
                 console.log(response.data)
             } catch (error) {
-                console.error("Error updating profile:", error.response ? error.response.data : error.message);
+                toast.error("Error updating profile:", error.response ? error.response.data : error.message);
+                // console.error("Error updating profile:", error.response ? error.response.data : error.message);
             }
         },
     },

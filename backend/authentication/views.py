@@ -2,18 +2,12 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.permissions import BasePermission, AllowAny, IsAuthenticated, IsAdminUser, SAFE_METHODS
 from rest_framework import status
 # from rest_framework import viewsets, generics, permissions, mixins
-from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from . models import Profile
 from .serializers import UserSerliazer, ProfileSerializer
 from django.core.exceptions import ObjectDoesNotExist
-
-class ModelPagination(LimitOffsetPagination):
-    page_size = 10 # Default page size
-    page_size_query_param = 'page_size'
-    max_page_size = 100
 
 class RegisterView(APIView):
     queryset = User.objects.all()
@@ -36,15 +30,15 @@ class ProfileView(APIView):
     def get(self, request):
         try:
             profile = Profile.objects.get(user=request.user)
-        except ObjectDoesNotExist:
-            profile = Profile.objects.create(user=request.user)
+        except Profile.ObjectDoesNotExist:
+            return Response({"error": "Profile not found"})
         serializer = ProfileSerializer(profile)
-        return Response(serializer.data)
+        return Response(serializer.data, status=200)
     
     def put(self, request):
         try:
             profile = Profile.objects.get(user=request.user)
-        except ObjectDoesNotExist:
+        except Profile.ObjectDoesNotExist:
             return Response({"error": "Profile not found"}, status=404)
         serializer = ProfileSerializer(profile, data=request.data, partial=True)
         if serializer.is_valid():

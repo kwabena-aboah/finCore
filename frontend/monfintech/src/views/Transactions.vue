@@ -126,6 +126,8 @@ import instance from '@/api/axios';
 // import { Modal } from "bootstrap";
 import Navbar from '@/components/Navbar.vue';
 import Sidebar from "@/components/Sidebar.vue"
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 
 export default {
     components: {
@@ -184,15 +186,11 @@ export default {
                     }
                 });
                 this.transactions.unshift(response.data); // Add new transactions to the  list
+                toast.success("Transaction created successfully!");
                 this.newTransaction = { amount: "", category: "", description: "" };    // Reset form
-                // const modal = document.getElementById("addTransactionModal");
-                // const bootstrapModal = Modal.getInstance(modal);
-                // bootstrapModal.hide(); // Close modal
-                // if (modal) {
-                //     bootstrapModal.hide(); // Close modal
-                // }
             } catch (error) {
-                console.error("Error adding transaction:", error);
+                toast.error("Error adding transaction", error);
+                // console.error("Error adding transaction:", error);
             }
         },
     },

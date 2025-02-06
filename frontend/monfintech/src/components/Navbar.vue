@@ -22,14 +22,16 @@
 
 <script>
 import { mapActions } from 'vuex';
+// import { toast } from "vue3-toastify";
+// import "vue3-toastify/dist/index.css";
 
 export default {
-    name: "NavbarComponent",
+    name: "NavBar",
     methods: {
         ...mapActions(["logout"]),
         logout() {
-            // this.logout(); // clear tokens from vuex and localStore
-            alert("See you later!")
+            // toast.success("See you later!");
+            // alert("See you later!")
             this.$router.push({ name: "LoginComponent" });
         }
     }

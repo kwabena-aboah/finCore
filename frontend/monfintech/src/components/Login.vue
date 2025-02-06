@@ -24,6 +24,8 @@
 <script>
 import instance from '@/api/axios';
 import { mapActions } from 'vuex';
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 
 export default {
     name: 'LoginComponent',
@@ -44,12 +46,12 @@ export default {
                 
                 // save token in vuex store
                 this.saveTokens({ accessToken: access, refreshToken: refresh });
-                
-                alert("Login successful!");
+                // alert("Login successful!");
                 this.$router.push({ name: "DashboardPage" });
             } catch (error) {
-                console.error(error.response.data);
-                alert("Invalid credentials")
+              toast.error("Invalid credentials", error.response.data);
+                // console.error(error.response.data);
+                // alert("Invalid credentials")
             }
         },
     },

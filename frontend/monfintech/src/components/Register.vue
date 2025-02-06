@@ -27,6 +27,9 @@
 
 <script>
 import instance from '@/api/axios';
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
+
 
 export default {
   name: 'RegisterComponent',
@@ -43,11 +46,13 @@ export default {
     async registerUser() {
       try {
         const response = await instance.post("auth/register/", this.form);
-        alert("Registration successful!");
-        console.log(response.data);
+        toast.success("Registration successful!", response.data);
+        // alert("Registration successful!");
+        // console.log(response.data);
       } catch (error) {
-        console.error(error.response.data);
-        alert("Error during registration!");
+        toast.success("Error during registration!", error.response.data);
+        // console.error(error.response.data);
+        // alert("Error during registration!");
       }
     },
   }

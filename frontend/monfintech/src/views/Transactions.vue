@@ -12,7 +12,7 @@
                 data-bs-toggle="modal"
                 data-bs-target="#addTransactionModal"
                 >
-                <i class="bi bi-plus-lg"></i>
+                <i class="bi bi-coin"></i>
             </button>
 
             <!-- Add Transaction Modal -->

@@ -38,6 +38,12 @@ const routes = [
         component: () => import('../views/Budget.vue'),
         meta: { requiresAuth: true },
     },
+    {
+        path: '/assets',
+        name: 'PortfolioPage',
+        component: () => import('../views/Portfolio.vue'),
+        meta: { requiresAuth: true },
+    },
 ];
 
 const router  = createRouter({

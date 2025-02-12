@@ -54,3 +54,19 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"{self.payment_method} - GHS{self.amount} - {self.status}"
+
+class Asset(models.Model):
+    ASSET_TYPES = (
+        ('stock', 'Stock'),
+        ('crypto', 'Cryptocurrency'),
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assets')
+    asset_type = models.CharField(max_length=10, choices=ASSET_TYPES)
+    symbol = models.CharField(max_length=10)
+    quantity = models.DecimalField(max_digits=20, decimal_places=8)
+    purchase_price = models.DecimalField(max_digits=20, decimal_places=8, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.symbol} ({self.asset_type}) - {self.quantity}"

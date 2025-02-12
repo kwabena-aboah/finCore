@@ -12,7 +12,7 @@
                 style="bottom: 30px; right: 30px; width: 60px; height: 60px;"
                 @click="openModal()"
                 >
-                <i class="bi bi-plus-lg"></i>
+                <i class="bi bi-currency-dollar"></i>
             </button>
 
             <!-- Payment Modal -->

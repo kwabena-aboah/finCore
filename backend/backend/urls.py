@@ -22,11 +22,16 @@ from django.conf.urls.static import static
 from django.views.static import serve
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from monfintech.views import AssetViewSet
+
+router = DefaultRouter()
+router.register(r'api/assets', AssetViewSet, basename='asset')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('authentication.urls')),
     path('api/', include('monfintech.urls')),
+    path('', include(router.urls)),
     re_path(r'^media/(?P<path>.*)$', serve,
         {'document_root': settings.MEDIA_ROOT}),
     re_path(r'^static/(?P<path>.*)$', serve,

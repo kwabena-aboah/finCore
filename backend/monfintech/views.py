@@ -1,15 +1,16 @@
 import uuid
 import requests
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, viewsets, filters
 from rest_framework.views import APIView
 from django.db.models import Q
 from rest_framework.response import Response
+from rest_framework.decorators import action 
 from rest_framework.permissions import BasePermission, AllowAny, IsAuthenticated, IsAdminUser, SAFE_METHODS
 from rest_framework import status
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import LimitOffsetPagination
-from . models import Transaction, Budget, Payment
-from . serializers import TransactionSerializer, BudgetSerializer, PaymentSerializer
+from . models import Transaction, Budget, Payment, Asset
+from . serializers import TransactionSerializer, BudgetSerializer, PaymentSerializer, AssetSerializer
 from django.core.exceptions import ObjectDoesNotExist
 
 class ModelPagination(LimitOffsetPagination):
@@ -140,3 +141,78 @@ class PaymentView(APIView):
 			'Content-Type': 'application/json'
 		})
 		return response.json()
+
+class AssetViewSet(viewsets.ModelViewSet):
+	serializer_class = AssetSerializer
+	permission_classes = [IsAuthenticated]
+	filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+	search_fields = ['symbol', 'asset_type']
+	ordering_fields = ['symbol', 'created_at']
+	ordering = ['created_at']
+
+	def get_queryset(self):
+		return Asset.objects.filter(user=self.request.user)
+
+	def perform_create(self, serializer):
+		serializer.save(user=self.request.user)
+
+	@action(detail=False, methods=['get'], url_path='portfolio-summary')
+	def portfolio_summary(self, request):
+		"""Return total portfolio value by summing current value for each asset."""
+		asset = self.get_queryset()
+		total_value = 0
+		summary = []
+		for asset in assets:
+			price_resp = self.get_current_price(asset.asset_type, asset.symbol)
+			current_price = price_resp.get('price', 0)
+			current_value = float(current_price) * float(asset.quantity)
+			total_value += current_value
+			summary.append({
+				'asset_id': asset.id,
+				'symbol': asset.symbol,
+				'current_price': current_price,
+				'quantity': float(asset.quantity),
+				'current_value': current_value,
+			})
+		return Response({
+			'total_value': total_value,
+			'assets': summary,
+		})
+
+	def get_current_price(self, asset_type, symbol):
+		# Use CoinGecko for stocks
+		if asset_type == 'crypto':
+			coin_id = symbol.lower() #In a real system, map symbol to CoinGecko's ID
+			url = f"https://api.coingecko.com/api/v3/simple/price?ids={coin_id}&vs_currencies=usd"
+			try:
+				response = requests.get(url, timeout=5)
+				data = response.json()
+				price = data.get(coin_id, {}).get("usd")
+				if price is None:
+					return {"error": "Price not found"}
+				return {"symbol": symbol, "price": price}
+			except Exception as e:
+				return {"error": str(e)}
+		elif asset_type == 'stock':
+			# Use Alpha Vantage or another API provider for stocks here
+			# Uncomment the code below and set YOUR_API_KEY to use live API
+			"""
+			import os
+			api_key = os.getenv('ALPHA_VANTAGE_API_KEY')
+			url = f"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={api_key}"
+			response = requests.get(url)
+			data = response.json()
+			price = data.get("Global Quote", {}).get("05. price")
+			if not price:
+				return Response({"error": "Price not found"}, status=404)
+			return Response({"symbol": symbol, "price": price})
+			"""
+			# For now return a dummy value
+			return {"symbol": symbol, "price": 123.45}
+		return {"error": "Invalid asset type"}
+
+	@action(detail=True, methods=['get'], url_path='price')
+	def price(self, request, pk=None):
+		asset = self.get_object()
+		price_info = self.get_current_price(asset.asset_type, asset.symbol)
+		return Response(price_info)
